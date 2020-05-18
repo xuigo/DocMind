@@ -1,0 +1,130 @@
+{% extends 'general_layout/general_layout_table.html' %}
+{% block content %}
+<div class="layui-container fly-marginTop fly-user-main">
+  <div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;">
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>{{quarter}}{{current_user.department}}季度计划安排</legend>
+    </fieldset>
+    <form class="layui-form" action="prodirect/submit">
+      <div class="layui-form-item">
+        <label class="layui-form-label">项目信息</label>
+        <div class="layui-input-inline" style="width:180px;">
+          <select name="quiz1" lay-search="" required lay-verify="required">
+            <option value="">请输入或选择季度</option>
+            {% for quarter in templates['quarters'] %}
+            <option value="{{quarter}}">{{quarter}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="layui-input-inline">
+          <select name="quiz2" lay-search="" required lay-verify="required">
+            <option value="">请输入部门</option>
+            {% for department in templates['departments'] %}
+            <option value="{{department}}">{{department}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="layui-input-inline">
+          <select name="quiz3" lay-search="" required lay-verify="required">
+            <option value="">请输入项目</option>
+            {% for project in templates['projects'] %}
+            <option value="{{project}}">{{project}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="layui-input-inline" style="width:150px;">
+          <select name="quiz4" lay-search="" required lay-verify="required">
+            <option value="">请选择项目经理</option>
+            {% for manager in templates['managers'] %}
+            <option value="{{manager}}">{{manager}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button type="submit" class="layui-btn" lay-submit="" lay-filter="qplan">立即提交</button>
+          <button type="" class="layui-btn layui-btn-primary" href="{{url_for('QuarterPlan.qplan')}}">重置</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="fly-panel fly-panel-user temContent" pad20>
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>已提交子任务内容</legend>
+    </fieldset>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+  </div>
+</div>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon">&#xe640;删除</i></a>
+</script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="static/layui.js" charset="utf-8"></script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test'
+      , url: '/prodirect/query'
+      , toolbar: '#toolbarDemo' 
+      , defaultToolbar: ['exports', 'print']
+      , title: '用户数据表'
+      , cols: [[
+        { field: 'quarter', title: '季度名称', width: 150, fixed: 'left', unresize: true, sort: true }
+        , { field: 'department', title: '部门名称', width: 150, fixed: 'left', unresize: true, sort: true }
+        , { field: 'pname', title: '项目名称', width: 368, fixed: 'left', unresize: true, sort: true }
+        , { field: 'manager', title: '项目经理', width: 150, fixed: 'left', unresize: true }
+        , { field: 'submitor', title: '创建人', width: 150, fixed: 'left', unresize: true, sort: true }
+        , { fixed: 'center', title: '操作', toolbar: '#barDemo', width: 122 }
+      ]]
+      , page: { 
+        layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+        //,curr: 5     //设定初始在第 5 页
+        , groups: 3     //只显示 1 个连续页码
+        , first: false  //不显示首页
+        , last: false   //不显示尾页  
+        , limit: 5
+        , limits: [5, 10]
+      }
+    });
+  });
+</script>
+
+<script>
+  layui.use('element', function () {
+    var element = layui.element; 
+    element.on('nav(demo)', function (elem) {
+    });
+  });
+</script>
+<script>
+  layui.use(['table', 'form', 'layer'], function () {
+    var table = layui.table;
+
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+      //console.log(obj)
+      if (obj.event === 'detail') {
+        layer.msg('项目：' + data.project + ' 的查看操作');
+      }
+      else if (obj.event === 'del') {
+        $.post("/prodirect/delete", { 'id': data.id }, function (ret) {
+
+          if (ret.code == 0) {
+
+            layer.msg("正在删除", { icon: 1, time: 1000 }, function () {
+              obj.del();
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("错误删除", { icon: 2, time: 1500 });
+          }
+        });
+
+      }
+
+    });
+  });
+</script>
+{% endblock %}

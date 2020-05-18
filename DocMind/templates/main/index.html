@@ -1,0 +1,67 @@
+{% extends 'general_layout/general_layout.html' %}
+{% block content %}
+<style>
+  .header {
+    border-bottom: 1px solid #404553;
+    border-right: 1px solid #404553;
+  }
+</style>
+
+<div class="fly-case-header">
+  <p class="fly-case-year">DocMind</p>
+  <a href="{{url_for('main.index')}}">
+    <img class="fly-case-banner" src="static/images/case_.png" alt="技术驱动效率 智慧感知未来">
+  </a>
+</div>
+
+<div class="fly-main" style="overflow: hidden;">
+
+  <div class="fly-tab-border fly-case-tab">
+    <span>
+      <a href="" class="tab-this">本季度</a>
+      <a href="">已提交</a>
+    </span>
+  </div>
+
+  <ul class="fly-case-list">
+    {% for template in DocTemplates %}
+    <li data-id="123">
+      <a class="fly-case-img" href="{{url_for(template['href'])}}">
+        <img src="{{template['bg_image']}}" alt="季度计划">
+        <cite class="layui-btn layui-btn-primary layui-btn-small">开始填写{{template['alt']}}</cite>
+      </a>
+      <h2><a href="{{url_for(template['href'])}}">{{template['alt']}}</a></h2>
+      <p class="fly-case-desc">{{template['desc']}}</p>
+      <div class="fly-case-info">
+        <a href="" class="fly-case-user"><img src="{{template['headimg']}}"></a>
+        <p class="layui-elip" style="font-size: 12px;"><span style="color: #666;">创建于</span> {{template['time']}}</p>
+        <p>已提交<a class="fly-case-nums fly-case-active"
+            style=" padding:0 5px; color: #01AAED;">{{template['uptimes']}}</a>次</p>
+        <a class="layui-btn" href="{{url_for(template['href'])}}">打开</a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+
+  <!-- <blockquote class="layui-elem-quote layui-quote-nm">暂无数据</blockquote> -->
+
+  <div style="text-align: center;">
+    <div class="laypage-main">
+      <span class="laypage-curr">1</span>
+      <a href="" class="laypage-next">下一页</a>
+    </div>
+  </div>
+</div>
+
+<div class="fly-footer">
+  <p><a href="http://www.docmind.cn/" target="_blank">DocMind社区</a> 2020 &copy; <a href="http://www.docmind.cn/"
+      target="_blank">DocMind.cn 出品</a></p>
+  <p>
+    <a href="#" target="_blank">推广计划</a>
+    <a href="#" target="_blank">社区运营</a>
+    <a href="#" target="_blank">微信公众号</a>
+  </p>
+</div>
+
+
+{% endblock %}

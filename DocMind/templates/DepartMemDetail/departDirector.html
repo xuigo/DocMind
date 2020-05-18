@@ -1,0 +1,172 @@
+{% extends 'general_layout/general_layout_table.html' %}
+{% block content %}
+<div class="layui-container fly-marginTop fly-user-main">
+  <div class="fly-panel fly-panel-user temContent" pad20 style="min-height:250px">
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>员工考核情况填写</legend>
+    </fieldset>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+  </div>
+
+  <div class="fly-panel fly-panel-user temContent" pad20 style="min-height:250px">
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>已提交数据</legend>
+    </fieldset>
+    <table class="layui-hide" id="test1" lay-filter="test1"></table>
+  </div>
+</div>
+
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container"> 
+      <button class="layui-btn layui-btn-sm" lay-event="add">新增成员</button>
+    </div>
+  </script>
+<script src="static/layui.js" charset="utf-8"></script>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="submit">提交</a>
+  </script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test'
+      , url: '/staff/query/1'
+      , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+      , defaultToolbar: ['exports', 'print']
+      , title: '用户数据表'
+      , cols: [[
+        { field: 'quarter', title: '季度名称', width: 130, fixed: 'left', unresize: true, sort: true }
+        , { field: 'department', title: '部门名称', width: 130, fixed: 'left', unresize: true, sort: true }
+        , { field: 'name', title: '姓名', width: 130, fixed: 'left', unresize: true, sort: true }
+        , { field: 'project_score', title: '项目得分', width: 130, fixed: 'left', unresize: true, sort: true }
+        , { field: 'other_score', title: '部门得分', width: 130, fixed: 'left', unresize: true, sort: true, edit: 'text' }
+        , { field: 'note', title: '备注', width: 310, fixed: 'left', unresize: true, sort: true }
+        , { fixed: 'center', title: '操作', toolbar: '#barDemo', width: 130 }
+      ]]
+      , page: true
+      , limit: 5
+      , limits: [5, 10, 15]
+    });
+
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+      //console.log(obj)
+      if (obj.event === 'submit') {
+        $.post("/staff_assess/submit", {
+          "id": data.id,
+          'department': data.department,
+          "member": data.name, "project_score": data.project_score,
+          "department_score": data.other_score,
+          "note": data.note
+        }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("提交成功", { icon: 1, time: 500 }, function () {
+              //obj.del(); 
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("修改失败", { icon: 2, time: 500 });
+          }
+        });
+      }
+    });
+
+    table.on('toolbar(test)', function (obj) {
+      switch (obj.event) {
+        case 'add':
+          layer.open({
+            type: 2,
+            title: "项目成员信息添加",
+            content: "{{url_for('DepartMemDetail.employee_iframe')}}",
+            area: ['20%', '50%'],
+            success: function (layero, index) {
+              var body = layer.getChildFrame('body', index);
+              var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+              console.log(body.html()) //得到iframe页的body内容
+              body.find('#flag').val('add')
+            }
+          });
+          break;
+      };
+    });
+
+  });
+
+
+</script>
+
+
+<script type="text/html" id="barDemo1">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script>
+  //已提交数据查询
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test1'
+      , url: '/staff/query/2'
+
+      , toolbar: '#toolbarDemo1' //开启头部工具栏，并为其绑定左侧模板
+      , defaultToolbar: ['exports', 'print']
+      , title: '用户数据表'
+      , cols: [[
+        { field: 'quarter', title: '季度名称', width: 130, fixed: 'left', unresize: true, sort: true }
+        , { field: 'department', title: '部门名称', width: 130, fixed: 'left', unresize: true, sort: true }
+        , { field: 'name', title: '姓名', width: 130, fixed: 'left', unresize: true, sort: true }
+        , { field: 'project_score', title: '项目得分', width: 130, fixed: 'left', unresize: true, sort: true }
+        , { field: 'other_score', title: '部门得分', width: 130, fixed: 'left', unresize: true, sort: true }
+        , { field: 'note', title: '备注', width: 310, fixed: 'left', unresize: true, sort: true }
+        , { fixed: 'center', title: '操作', toolbar: '#barDemo1', width: 130 }
+      ]]
+      , page: true
+      , limit: 5
+      , limits: [5, 10, 15]
+    });
+
+
+    //监听行工具事件
+    table.on('tool(test1)', function (obj) {
+      var data = obj.data;
+      //console.log(obj)
+      if (obj.event === 'del') {
+        $.post("/staff_assess/del", { 'id': data.id }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("正在删除", { icon: 1, time: 500 }, function () {
+              obj.del();
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("删除失败", { icon: 2, time: 500 });
+          }
+        });
+      } else if (obj.event === 'edit') {
+        //layer.msg('项目：' + data.id + ' 的查看操作');
+        layer.open({
+          type: 2,
+          title: "部门成员考核修改",
+          content: "{{url_for('DepartMemDetail.employee_iframe')}}",
+          area: ['20%', '50%'],
+          success: function (layero, index) {
+            var body = layer.getChildFrame('body', index);
+            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            console.log(body.html()) //得到iframe页的body内容
+            body.find('#quarter').val(data.quarter)
+            body.find('#manager').val(data.name)
+            body.find('#project_score').val(data.project_score)
+            body.find('#department_score').val(data.other_score)
+            body.find('#flag').val(data.id)
+          }
+        });
+      }
+    });
+
+  });
+</script>
+
+
+{% endblock %}

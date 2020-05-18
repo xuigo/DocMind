@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	{% if title %}
+	<title>DocMind - {{ title }}</title>
+	{% else %}
+	<title>DocMind</title>
+	{% endif %}
+	<link rel="stylesheet" href="static/css/layui.css" media="all">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<!-- <link rel="stylesheet" href="static/css/global.css"> -->
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<!-- <link rel="stylesheet" href="//res.layui.com/layui/dist/css/layui.css"  media="all"> -->
+	<style>
+		.main {
+			height: 80vh;
+			width: 70%;
+			padding-top: 60px;
+			padding-left: 18%;
+			padding-right: 12%;
+
+		}
+
+		.doc-logo {
+			height: 60px;
+			line-height: 60px;
+			text-indent: 20px;
+			font-size: 22px;
+			text-align: center;
+		}
+
+		html {
+			background-color: #F2F2F2;
+		}
+
+		body {
+			font: 14px "Helvetica Neue", Helvetica, "PingFang SC", 微软雅黑, Tahoma, Arial, sans-serif !important;
+		}
+
+		.temContent {
+			min-height: 250px;
+			border: 1px solid #dddddd;
+			margin-top: 20px;
+			padding: 20px;
+
+		}
+
+		.fly-panel {
+			border-radius: 2px;
+			background-color: #fff;
+			box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+		}
+
+		.fly-footer {
+			margin: 50px 0 0;
+			padding: 20px 0 30px;
+			line-height: 30px;
+			text-align: center;
+			color: #737573;
+			border-top: 1px solid #e2e2e2;
+		}
+
+		.fly-footer a {
+			padding: 0 6px;
+			font-weight: 300;
+			color: #333;
+		}
+
+		.fly-footer a:hover {
+			color: #777;
+		}
+
+		.fly-union {
+			margin-top: 10px;
+			color: #999;
+		}
+
+		.fly-union>* {
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		.fly-union a[upyun] img {
+			width: 80px;
+		}
+
+		.fly-union span {
+			position: relative;
+			top: 3px;
+		}
+
+		.fly-union span a {
+			padding: 0;
+			display: inline;
+			color: #999;
+		}
+
+		.fly-union span a:hover {
+			text-decoration: underline;
+		}
+	</style>
+
+</head>
+
+<body class="layui-layout-body" style="margin-top:0px; overflow:auto;">
+	<div class="layui-layout layui-layout-admin">
+		<div class="layui-row  layui-bg-black ">
+			<div class="layui-col-md2 doc-logo">
+				DocMind
+			</div>
+			<div class="layui-nav layui-col-md7" style="z-index:9999;">
+				<ul class="layui-nav">
+					<li class="layui-nav-item"><a href="{{url_for('SuperAdmin.noticeManager') }}">添加通知</a></li>
+					<li class="layui-nav-item"><a href="{{url_for('SuperAdmin.userManager') }}">用户审核</a></li>
+					<li class="layui-nav-item"><a href="{{url_for('SuperAdmin.dataManager') }}">文档管理</a></li>
+					<li class="layui-nav-item"><a href="{{url_for('SuperAdmin.communityManager') }}">社区管理</a></li>
+				</ul>
+			</div>
+		</div>
+
+		<style>
+			.alert {
+				padding: 15px;
+				margin-bottom: 20px;
+				border: 1px solid transparent;
+				border-radius: 4px;
+			}
+
+			.alert h4 {
+				margin-top: 0;
+				color: inherit;
+			}
+
+			.alert .alert-link {
+				font-weight: bold;
+			}
+
+			.alert>p,
+			.alert>ul {
+				margin-bottom: 0;
+			}
+
+			.alert>p+p {
+				margin-top: 5px;
+			}
+
+			.alert-dismissable,
+			.alert-dismissible {
+				padding-right: 35px;
+			}
+
+			.alert-dismissable .close,
+			.alert-dismissible .close {
+				position: relative;
+				top: -2px;
+				right: -21px;
+				color: inherit;
+			}
+
+			.alert-success {
+				color: #3c763d;
+				background-color: #dff0d8;
+				border-color: #d6e9c6;
+			}
+
+			.alert-success hr {
+				border-top-color: #c9e2b3;
+			}
+
+			.alert-success .alert-link {
+				color: #2b542c;
+			}
+
+			.alert-info {
+				color: #31708f;
+				background-color: #d9edf7;
+				border-color: #bce8f1;
+			}
+
+			.alert-info hr {
+				border-top-color: #a6e1ec;
+			}
+
+			.alert-info .alert-link {
+				color: #245269;
+			}
+
+			.alert-warning {
+				color: #8a6d3b;
+				background-color: #fcf8e3;
+				border-color: #faebcc;
+			}
+
+			.alert-warning hr {
+				border-top-color: #f7e1b5;
+			}
+
+			.alert-warning .alert-link {
+				color: #66512c;
+			}
+
+			.alert-danger {
+				color: #a94442;
+				background-color: #f2dede;
+				border-color: #ebccd1;
+			}
+
+			.alert-danger hr {
+				border-top-color: #e4b9c0;
+			}
+
+			.alert-danger .alert-link {
+				color: #843534;
+			}
+
+			.close {
+				float: right;
+				font-size: 21px;
+				font-weight: bold;
+				line-height: 1;
+				color: #000;
+				text-shadow: 0 1px 0 #fff;
+				filter: alpha(opacity=20);
+				opacity: .2;
+			}
+
+			.close:hover,
+			.close:focus {
+				color: #000;
+				text-decoration: none;
+				cursor: pointer;
+				filter: alpha(opacity=50);
+				opacity: .5;
+			}
+
+			button.close {
+				-webkit-appearance: none;
+				padding: 0;
+				cursor: pointer;
+				background: transparent;
+				border: 0;
+			}
+		</style>
+		<style>
+			@media (max-width: 767px) {
+				.navbar-form .form-group {
+					margin-bottom: 5px;
+				}
+
+				.navbar-form .form-group:last-child {
+					margin-bottom: 0;
+				}
+			}
+
+			@media (min-width: 768px) {
+				.navbar-form .form-group {
+					display: inline-block;
+					margin-bottom: 0;
+					vertical-align: middle;
+				}
+
+				.navbar-form .form-control {
+					display: inline-block;
+					width: auto;
+					vertical-align: middle;
+				}
+
+				.navbar-form .form-control-static {
+					display: inline-block;
+				}
+
+				.navbar-form .input-group {
+					display: inline-table;
+					vertical-align: middle;
+				}
+
+				.navbar-form .input-group .input-group-addon,
+				.navbar-form .input-group .input-group-btn,
+				.navbar-form .input-group .form-control {
+					width: auto;
+				}
+
+				.navbar-form .input-group>.form-control {
+					width: 100%;
+				}
+
+				.navbar-form .control-label {
+					margin-bottom: 0;
+					vertical-align: middle;
+				}
+
+				.navbar-form .radio,
+				.navbar-form .checkbox {
+					display: inline-block;
+					margin-top: 0;
+					margin-bottom: 0;
+					vertical-align: middle;
+				}
+
+				.navbar-form .radio label,
+				.navbar-form .checkbox label {
+					padding-left: 0;
+				}
+
+				.navbar-form .radio input[type="radio"],
+				.navbar-form .checkbox input[type="checkbox"] {
+					position: relative;
+					margin-left: 0;
+				}
+
+				.navbar-form .has-feedback .form-control-feedback {
+					top: 0;
+				}
+			}
+
+			.layui-table-tool {
+				height: 0px !important;
+			}
+		</style>
+		<script>
+			hide = function (obj) {
+				document.getElementById("alert-flash").style.display = "none";
+			}
+		</script>
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+		{% for category,message in messages %}
+		<div class="alert alert-{{category}}" id="alert-flash" style="text-align: center;">
+			<button type="button" class="close" onclick="hide(this)"> x</button>
+			{{message}}
+
+		</div>
+		{% endfor %}
+		{% endif %}
+		{% endwith %}
+
+		{% block content %}
+		{% endblock %}
+		<div class="fly-footer">
+			<p><a href="http://www.docmind.cn/" target="_blank">DocMind社区</a> 2020 &copy; <a
+					href="http://www.docmind.cn/" target="_blank">DocMind.cn 出品</a></p>
+			<p>
+				<a href="#" target="_blank">推广计划</a>
+				<a href="#" target="_blank">社区运营</a>
+				<a href="#" target="_blank">微信公众号</a>
+			</p>
+		</div>
+		<script>
+			layui.use('element', function () {
+				var element = layui.element; //导航的hover效果、二级菜单等功能，需要依赖element模	  
+				//监听导航点击
+				element.on('nav(demo)', function (elem) {
+					//console.log(elem)
+					//layer.msg(elem.text());
+				});
+			});
+		</script>
+
+		<script>
+			layui.use(['form', 'layedit', 'laydate'], function () {
+				var form = layui.form,
+					layer = layui.layer
+				layui.$('#LAY-component-form-getval').on('click', function () {
+					var data = form.val('example');
+					alert(JSON.stringify(data));
+				});
+			});
+		</script>
+
+</body>
+
+</html>

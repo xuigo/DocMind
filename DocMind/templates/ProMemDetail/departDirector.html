@@ -1,0 +1,64 @@
+{% extends 'general_layout/general_layout_table.html' %}
+{% block content %}
+
+<div class="layui-container fly-marginTop fly-user-main">
+
+  <div class="fly-panel fly-panel-user temContent" style="min-height:250px;">
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>本部门已提交加班数据</legend>
+    </fieldset>
+    <table class="layui-hide" id="test" lay-filter="test" style="background-color: #F0F0F0;"></table>
+  </div>
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+    <!-- <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a> -->
+  </script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="static/layui.js" charset="utf-8"></script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test'
+      , url: '/overtime/query/3'
+      , toolbar: '#toolbarDemo'
+      , defaultToolbar: ['exports', 'print']
+      , title: '加班统计表'
+      , cols: [[
+        { field: 'quarter', title: '季度', width: 160, fixed: 'left', unresize: true, sort: true }
+        , { field: 'pname', title: '项目名称', width: 290, fixed: 'left', unresize: true, sort: true }
+        , { field: 'member', title: '姓名', width: 160, fixed: 'left', unresize: true, sort: true }
+        , { field: 'rate', title: '投入比例（%）', width: 160, fixed: 'left', unresize: true, sort: true }
+        , { field: 'days', title: '加班天数（天）', width: 160, fixed: 'left', unresize: true, sort: true }
+        , { field: 'score', title: '项目得分', width: 160, fixed: 'left', unresize: true, sort: true }
+      ]]
+      , page: true
+    });
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+      if (obj.event === 'detail') {
+        layer.open({
+          type: 2,
+          title: "项目成员信息查看",
+          content: "{{url_for('ProMemDetail.overtime_iframe')}}",
+          area: ['20%', '60%'],
+          success: function (layero, index) {
+            var body = layer.getChildFrame('body', index);
+            var iframeWin = window[layero.find('iframe')[0]['name']];
+            console.log(body.html())
+            body.find('#quarter').val(data.quarter)
+            body.find('#pname').val(data.pname)
+            body.find('#manager').val(data.member)
+            body.find('#edit_rate').val(data.rate)
+            body.find('#edit_days').val(data.days)
+            body.find('#edit_score').val(data.score)
+            body.find('#flag').val(data.id)
+          }
+        });
+      }
+    });
+  });
+</script>
+
+{% endblock %}

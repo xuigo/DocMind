@@ -1,0 +1,200 @@
+{% extends 'general_layout/general_layout.html' %}
+{% block content %}
+<div class="layui-container fly-marginTop fly-user-main" style="margin-left:8%;">
+  <div class="site-tree-mobile layui-hide">
+    <i class="layui-icon">&#xe602;</i>
+  </div>
+  <div class="site-mobile-shade"></div>
+
+  <div class="site-tree-mobile layui-hide">
+    <i class="layui-icon">&#xe602;</i>
+  </div>
+  <div class="site-mobile-shade"></div>
+  <div class="fly-panel fly-panel-user" pad20>
+    <div class="layui-tab layui-tab-brief" lay-filter="user">
+      <ul class="layui-tab-title" id="LAY_mine">
+        <li class="layui-this" lay-id="info">我的资料</li>
+        <!-- <li lay-id="avatar">头像</li> -->
+        <li lay-id="pass">密码</li>
+        <li lay-id="bind">帐号绑定</li>
+      </ul>
+      <div class="layui-tab-content" style="padding: 20px 0;">
+        <div class="layui-form layui-form-pane layui-tab-item layui-show">
+          <form method="post" action="setinfo">
+            <div class="layui-form-item">
+              <div class="layui-upload">
+                <div class="layui-upload-list">
+                  <img name="avater" class="layui-upload-img" id="demoupload"
+                    style="height:80px;width:80px;border-radius:50px;" src={{current_user.image}} alt="">
+                  <p id="demoText"></p>
+                </div>
+                <button type="button" class="layui-btn" id="test1">上传头像</button>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label for="L_username" class="layui-form-label">昵称修改</label>
+              <div class="layui-input-inline">
+                <input type="text" id="L_username" name="username" required lay-verify="required" autocomplete="off"
+                  value="{{current_user.username}}" class="layui-input">
+              </div>
+              <div class="layui-inline">
+                <div class="layui-input-inline">
+                  <input type="radio" name="sex" value="0" checked title="男">
+                  <input type="radio" name="sex" value="1" title="女">
+                </div>
+              </div>
+            </div>
+            
+            {% if role==1 %}
+            <div class="layui-form-item">
+              <label class="layui-form-label">所属部门</label>
+              <div class="layui-input-inline">
+                <select name="department" lay-search="">
+                  {% if current_user.department %}
+                  <option value={{current_user.department}}>{{current_user.department}}</option>
+                  {% else %}
+                  <option value="">请选择部门</option>
+                  {% endif %}
+
+                  {% for department in templates['departments'] %}
+                  <option value="{{department}}">{{department}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="layui-form-item">
+              <label class="layui-form-label">项目名称</label>
+              <div class="layui-input-inline">
+                <select name="project" lay-search="">
+                  {% if current_user.project %}
+                  <option value="{{current_user.project}} ">{{current_user.project}}</option>
+                  {% else %}
+                  <option value="">请输入项目</option>
+                  {% endif %}
+                  {% for project in templates['projects'] %}
+                  <option value="{{project}}">{{project}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            {% elif role==2 %}
+            <div class="layui-form-item">
+              <label class="layui-form-label">所属部门</label>
+              <div class="layui-input-inline">
+                <select name="department" lay-search="">
+                  {% if current_user.department %}
+                  <option value={{current_user.department}}>{{current_user.department}}</option>
+                  {% else %}
+                  <option value="">请选择部门</option>
+                  {% endif %}
+                  {% for department in templates['departments'] %}
+                  <option value="{{department}}">{{department}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            {% elif role==5 %}
+            <div class="layui-form-item">
+              <label class="layui-form-label">所属部门</label>
+              <div class="layui-input-inline">
+                <select name="department" lay-search="">
+                  {% if department %}
+                  <option value={{department}}>{{department}}</option>
+                  {% else %}
+                  <option value="">请选择部门</option>
+                  {% endif %}
+                  {% for department in templates['departments'] %}
+                  <option value="{{department}}">{{department}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            {% endif %}
+            <div class="layui-form-item layui-form-text">
+              <label for="L_sign" class="layui-form-label">签名</label>
+              <div class="layui-input-block">
+                <textarea placeholder="随便写些什么刷下存在感(120个字符内)" id="L_sign" name="sign" autocomplete="off"
+                  class="layui-textarea" style="height: 80px;">{{current_user.sign}}</textarea>
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <button type="submit" class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="layui-form layui-form-pane layui-tab-item">
+          <form action="/repass" method="post">
+            <div class="layui-form-item">
+              <label for="L_nowpass" class="layui-form-label">当前密码</label>
+              <div class="layui-input-inline">
+                <input type="password" id="L_nowpass" name="nowpass" required lay-verify="required" autocomplete="off"
+                  class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <label for="L_pass" class="layui-form-label">新密码</label>
+              <div class="layui-input-inline">
+                <input type="password" id="L_pass" name="pass" required lay-verify="required" autocomplete="off"
+                  class="layui-input">
+              </div>
+              <div class="layui-form-mid layui-word-aux">6到16个字符</div>
+            </div>
+            <div class="layui-form-item">
+              <label for="L_repass" class="layui-form-label">确认密码</label>
+              <div class="layui-input-inline">
+                <input type="password" id="L_repass" name="repass" required lay-verify="required" autocomplete="off"
+                  class="layui-input">
+              </div>
+            </div>
+            <div class="layui-form-item">
+              <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+            </div>
+          </form>
+
+
+
+        </div>
+
+        <div class="layui-form layui-form-pane layui-tab-item">
+          <ul class="app-bind">
+            <li class="fly-msg app-havebind">
+              <i class="iconfont icon-qq"></i>
+              <span>已成功绑定，您可以使用QQ帐号直接登录DocMind，当然，您也可以</span>
+              <a href="javascript:;" class="acc-unbind" type="qq_id">解除绑定</a>
+
+              <a href="" onclick="layer.msg('正在绑定微博QQ', {icon:16, shade: 0.1, time:0})" class="acc-bind"
+                type="qq_id">立即绑定</a>
+              <span>，即可使用QQ帐号登录DocMind</span>
+            </li>
+            <li class="fly-msg">
+              <i class="iconfont icon-weibo"></i>
+              <span>已成功绑定，您可以使用微博直接登录DocMind，当然，您也可以</span>
+              <a href="javascript:;" class="acc-unbind" type="weibo_id">解除绑定</a>
+
+              <a href="" class="acc-weibo" type="weibo_id"
+                onclick="layer.msg('正在绑定微博', {icon:16, shade: 0.1, time:0})">立即绑定</a>
+              <span>，即可使用微博帐号登录DocMind</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="fly-footer">
+  <p><a href="http://www.docmind.cn/" target="_blank">DocMind社区</a> 2020 &copy; <a href="http://www.docmind.cn/"
+      target="_blank">DocMind.cn 出品</a></p>
+  <p>
+    <a href="#" target="_blank">推广计划</a>
+    <a href="#" target="_blank">社区运营</a>
+    <a href="#" target="_blank">微信公众号</a>
+  </p>
+</div>
+
+{% endblock %}

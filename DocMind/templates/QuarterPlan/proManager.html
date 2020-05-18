@@ -1,0 +1,161 @@
+{% extends 'general_layout/general_layout_table.html' %}
+{% block content %}
+<div class="layui-container fly-marginTop fly-user-main">
+  <div class="fly-panel fly-panel-user temContent" pad20>
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>{{msg['quarter']}}/{{msg['pname']}}/季度计划安排</legend>
+    </fieldset>
+
+    <form class="layui-form" action="quarter/submit">
+      <div class="layui-form-item">
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">季度计划</label>
+        <div class="layui-input-block">
+
+          <textarea placeholder="请输入内容" class="layui-textarea" name="QPlan" required lay-verify="required"></textarea>
+
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label">验收人</label>
+        <div class="layui-input-inline">
+          <select name="quiz5" lay-search="" required lay-verify="required">
+            <option value="">第一验收人</option>
+            {% for manager in templates['managers'] %}
+            <option value="{{manager}}">{{manager}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="layui-input-inline">
+          <select name="quiz6" lay-search="" required lay-verify="required">
+            <option value="">第二验收人</option>
+            {% for manager in templates['managers'] %}
+            <option value="{{manager}}">{{manager}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <label class="layui-form-label">实施人</label>
+        <div class="layui-input-inline">
+          <select name="quiz7" lay-search="" required lay-verify="required">
+            <option value="">工作实施人</option>
+            {% for manager in templates['managers'] %}
+            <option value="{{manager}}">{{manager}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button type="submit" class="layui-btn" lay-submit="" lay-filter="qplan">立即提交</button>
+          <button type="" class="layui-btn layui-btn-primary" href="{{url_for('QuarterPlan.qplan')}}">重置</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <div class="fly-panel fly-panel-user temContent" pad20>
+    <!-- 显示已提交数据 -->
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>已提交子任务内容</legend>
+    </fieldset>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+  </div>
+</div>
+
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon">&#xe705;查看</i></a>
+  <!-- <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a> -->
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon">&#xe640;删除</i></a>
+</script>
+
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="static/layui.js" charset="utf-8"></script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test'
+      , url: '/quarter/query'
+      , toolbar: '#toolbarDemo'
+      , defaultToolbar: ['filter', 'exports', 'print', {
+        title: '提示'
+        , layEvent: 'LAYTABLE_TIPS'
+        , icon: 'layui-icon-tips'
+      }]
+      , title: '用户数据表'
+      , cols: [[
+        , { field: 'quarter', title: '季度名称', width: 122, fixed: 'left', unresize: true }
+        , { field: 'pname', title: '项目名称', width: 120, fixed: 'left', unresize: true, sort: true }
+        , { field: 'qplanContent', title: '工作内容', wiidth: 300, fixed: 'left', unresize: true }
+        , { field: 'implementer', title: '实施人', width: 120, fixed: 'left', unresize: true, sort: true }
+        , { field: 'checker1', title: '验收人一', width: 120, fixed: 'left', unresize: true, sort: true }
+        , { field: 'checker2', title: '验收人二', width: 120, fixed: 'left', unresize: true, sort: true }
+        , { fixed: 'center', title: '操作', toolbar: '#barDemo', width: 160 }
+      ]]
+      , page: true
+      , limit: 5
+      , limits: [5, 10]
+    });
+  });
+</script>
+
+<script>
+  layui.use('element', function () {
+    var element = layui.element;
+    //监听导航点击
+    element.on('nav(demo)', function (elem) {
+      //console.log(elem)
+      //layer.msg(elem.text());
+    });
+  });
+</script>
+
+<script>
+  layui.use(['table', 'form', 'layer'], function () {
+    var table = layui.table;
+
+    //监听行工具事件
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+      //console.log(obj)
+      if (obj.event === 'detail') {
+        layer.open({
+          type: 2,
+          title: "{{msg['pname']}}" + "项目 &nbsp;子任务",
+          //title:"项目成员信息查看",
+          content: "{{url_for('QuarterPlan.qplan_iframe')}}",
+          area: ['20%', '70%'],
+          success: function (layero, index) {
+            var body = layer.getChildFrame('body', index);
+            var iframeWin = window[layero.find('iframe')[0]['name']];
+            console.log(body.html()) //得到iframe页的body内容
+            body.find('#quarter').val(data.quarter)
+            body.find('#department').val(data.department)
+            body.find('#pname').val(data.pname)
+            body.find('#manager').val(data.manager)
+            body.find('#qplan').val(data.qplanContent)
+            body.find('#checker').val(data.checker1 + ' ' + data.checker2)
+            body.find('#implementer').val(data.implementer)
+          }
+        });
+      }
+      else if (obj.event === 'del') {
+        $.post("/quarter/delete", { 'id': data.id }, function (ret) {
+          //layer.msg('项目：' + data.id + ' 的删除操作');
+          if (ret.code == 0) {
+            layer.msg("正在删除", { icon: 1, time: 1000 }, function () {
+              obj.del();
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("错误删除", { icon: 2, time: 1500 });
+          }
+        });
+      }
+    });
+
+  });
+</script>
+{% endblock %}

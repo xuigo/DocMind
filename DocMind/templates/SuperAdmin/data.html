@@ -1,0 +1,1094 @@
+{% extends 'general_layout/general_layout_admin.html' %}
+{% block content %}
+<style>
+  .layui-nav-child dd a {
+    cursor: pointer;
+  }
+
+  canvas {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
+
+  .chart-container {
+    width: 400px;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-bottom: 40px;
+    margin-top: 40px;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>
+<div class="layui-container fly-marginTop fly-user-main">
+
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <ul class="layui-nav layui-nav-tree" lay-filter="test">
+        <li class="layui-nav-item layui-nav-itemed">
+          <a class="" href="javascript:;">季度文档</a>
+          <dl class="layui-nav-child">
+            <dd><a onclick="con(1)">季度计划</a></dd>
+            <dd><a onclick="con(2)">周报</a></dd>
+            <dd><a onclick="con(3)">加班统计</a></dd>
+            <dd><a onclick="con(4)">项目评审</a></dd>
+            <dd><a onclick="con(5)">员工考核</a></dd>
+            <dd><a onclick="con(6)">部门考评</a></dd>
+            <dd><a onclick="con(7)">团队建设</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item layui-nav-itemed">
+          <a href="javascript:;">年度文档</a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">员工考核</a></dd>
+            <dd><a href="">超链接</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item"><a href="">其他</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="fly-panel fly-panel-suer temContent" pad20 style="min-height:200px;" id='p0'">
+    <div id=" default" class="container"> </div>
+</div>
+<script src="static/layui.js"></script>
+<script>
+  layui.use('element', function () {
+    var element = layui.element;
+
+  });
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
+<script src="static/utils.js"></script>
+<script>
+  function createConfig(position) {
+    return {
+      type: 'line',
+      data: {
+        labels: ['第一季度', '第二季度', '第三季度', '第四季度'],
+        datasets: [{
+          label: '按时提交',
+          borderColor: window.chartColors.blue,
+          backgroundColor: window.chartColors.blue,
+          data: position.data_positive,
+          fill: false,
+        }, {
+          label: '延期提交',
+          borderColor: window.chartColors.red,
+          backgroundColor: window.chartColors.red,
+          data: position.data_negative,
+          fill: false,
+        }]
+      },
+      options: {
+        responsive: true,
+        title: {
+          display: true,
+          text: position.title
+        },
+        tooltips: {
+          position: position.title,
+          mode: 'index',
+          intersect: false,
+        },
+      }
+    };
+  }
+  window.onload = function () {
+    //折线图数据加载
+    var container = document.querySelector('.container');
+    [{
+      title: '季度计划统计',
+      data_positive: [10, 20, 30, 20],
+      data_negative: [13, 32, 33, 20]
+    },
+    {
+      title: '周报统计',
+      data_positive: [21, 31, 41, 51],
+      data_negative: [16, 24, 33, 67]
+    },
+    {
+      title: '加班统计',
+      data_positive: [10, 20, 30, 20],
+      data_negative: [21, 31, 41, 51]
+    },
+    {
+      title: '员工考评统计',
+      data_positive: [21, 31, 41, 51],
+      data_negative: [10, 20, 30, 20]
+    }
+    ].forEach(function (position) {
+      var div = document.createElement('div');
+      div.classList.add('chart-container');
+      var canvas = document.createElement('canvas');
+      div.appendChild(canvas);
+      container.appendChild(div);
+      var ctx = canvas.getContext('2d');
+      var config = createConfig(position);
+      new Chart(ctx, config);
+    });
+  };
+</script>
+
+<div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;" id='p1'>
+  <span class="layui-breadcrumb">
+    <a href="#">文档管理</a>
+    <a href="#">数据管理</a>
+    <a><cite>季度计划</cite></a>
+  </span>
+  <form method="post" ,action='#'>
+    <div style="margin-top:40px; padding-bottom:10px;">
+      <div class="layui-inline">
+        <div class="layui-input-inline">
+          <input type="text" class="layui-input" id="test17" placeholder="设置开始日期">
+        </div>
+        <label for="test17" class="layui-btn  layui-btn-radius  ">开始日期</label>
+
+        <div class="layui-input-inline" style="margin-left:30px;">
+          <input type="text" class="layui-input" id="test18" placeholder="设置截至日期">
+        </div>
+        <label for="test18" class="layui-btn  layui-btn-radius  ">截至日期</label>
+
+        <button type="button" id="sendQuarter" class="layui-btn  layui-btn-radius layui-btn-danger"
+          style="margin-left:30px;">发送邮件</button>
+      </div>
+    </div>
+
+  </form>
+  <table class="layui-hide" id="test" lay-filter="test"></table>
+</div>
+<div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;" id="p2">
+  <span class="layui-breadcrumb">
+    <a href="#">文档管理</a>
+    <a href="#">数据管理</a>
+    <a><cite>周报</cite></a>
+  </span>
+  <div style="margin-top:40px; padding-bottom:10px;">
+
+    <div class="layui-inline">
+      <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="test_week" placeholder="设置开始日期">
+      </div>
+      <label for="test_week" class="layui-btn  layui-btn-radius  ">开始日期</label>
+
+      <div class="layui-input-inline" style="margin-left:30px;">
+        <input type="text" class="layui-input" id="test_week_2" placeholder="设置截至日期">
+      </div>
+      <label for="test_week_2" class="layui-btn  layui-btn-radius  ">截至日期</label>
+      <button type="button" id="sendWeek" class="layui-btn  layui-btn-radius layui-btn-danger"
+        style="margin-left:30px;">发送邮件</button>
+    </div>
+
+  </div>
+
+  <table class="layui-hide" id="test_weekreport" lay-filter="test_weekreport"></table>
+</div>
+
+
+<div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;" id="p3">
+  <span class="layui-breadcrumb">
+    <a href="#">文档管理</a>
+    <a href="#">数据管理</a>
+    <a><cite>加班统计</cite></a>
+  </span>
+  <div style="margin-top:40px; padding-bottom:10px;">
+    <div class="layui-inline">
+
+      <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="test_overcalc" placeholder="设置截至日期">
+      </div>
+      <label for="test_overcalc" class="layui-btn  layui-btn-radius  ">设置日期</label>
+    </div>
+  </div>
+
+  <table class="layui-hide" id="test_overcalc_table" lay-filter="test_overcalc_table"></table>
+</div>
+
+
+<div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;" id="p4">
+  <span class="layui-breadcrumb">
+    <a href="#">文档管理</a>
+    <a href="#">数据管理</a>
+    <a><cite>项目评审</cite></a>
+  </span>
+  <div style="margin-top:40px; padding-bottom:10px;">
+    <div class="layui-inline">
+
+      <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="test_pro" placeholder="设置截至日期">
+      </div>
+      <label for="test_pro" class="layui-btn  layui-btn-radius  ">设置日期</label>
+    </div>
+  </div>
+
+  <table class="layui-hide" id="test_pro_table" lay-filter="test_pro_table"></table>
+</div>
+<!-- 员工考核 -->
+<div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;" id="p5">
+  <span class="layui-breadcrumb">
+    <a href="#">文档管理</a>
+    <a href="#">数据管理</a>
+    <a><cite>员工考核</cite></a>
+  </span>
+  <div style="margin-top:40px; padding-bottom:10px;">
+    <div class="layui-inline">
+
+      <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="test_emplo" placeholder="设置截至日期">
+      </div>
+      <label for="test_emplo" class="layui-btn  layui-btn-radius  ">设置日期</label>
+    </div>
+  </div>
+
+  <table class="layui-hide" id="test_emplo_table" lay-filter="test_emplo_table"></table>
+</div>
+
+<div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;" id="p6">
+  <span class="layui-breadcrumb">
+    <a href="#">文档管理</a>
+    <a href="#">数据管理</a>
+    <a><cite>部门考核</cite></a>
+  </span>
+  <div style="margin-top:40px; padding-bottom:10px;">
+    <div class="layui-inline">
+
+      <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="test_depart" placeholder="设置截至日期">
+      </div>
+      <label for="test_depart" class="layui-btn  layui-btn-radius  ">设置日期</label>
+    </div>
+  </div>
+
+  <table class="layui-hide" id="test_depart_table" lay-filter="test_depart_table"></table>
+</div>
+
+<div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;" id="p7">
+  <span class="layui-breadcrumb">
+    <a href="#">文档管理</a>
+    <a href="#">数据管理</a>
+    <a><cite>团队建设</cite></a>
+  </span>
+  <div style="margin-top:40px; padding-bottom:10px;">
+    <div class="layui-inline">
+
+      <div class="layui-input-inline">
+        <input type="text" class="layui-input" id="test_team" placeholder="设置截至日期">
+      </div>
+      <label for="test_team" class="layui-btn  layui-btn-radius  ">设置日期</label>
+    </div>
+  </div>
+
+  <table class="layui-hide" id="test_team_table" lay-filter="test_team_table"></table>
+</div>
+</div>
+
+<script src="static/layui.js" charset="utf-8"></script>
+<script>
+  layui.use('element', function () {
+    var element = layui.element;
+    //监听导航点击
+    element.on('nav(demo)', function (elem) { });
+  });
+</script>
+
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="static/layui.js" charset="utf-8"></script>
+
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test',
+      url: '/superadmin_query/qplan_query',
+      toolbar: '#toolbarDemo'
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '季度计划数据统计表',
+      cols: [
+        [{
+          field: 'quarter',
+          title: '季度',
+          width: 150,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'department',
+          title: '部门',
+          wiidth: 300,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'pname',
+          title: '项目名称',
+          wiidth: 300,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'manager',
+          title: '负责人',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'qplanContent',
+          title: '任务详情',
+          width: 150,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'implementer',
+          title: '实施人',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'time',
+          title: '创建时间',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }]
+      ],
+      page: true,
+      limit: 5,
+      limits: [5, 10]
+    });
+  });
+</script>
+
+<script type="text/html" id="vkreport_op">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">查看</a>
+</script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test_weekreport',
+      url: '/superadmin_query/weekreport_query',
+      toolbar: '#toolbarDemo'
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '周报提交数据统计表',
+      cols: [
+        [{
+          field: 'quarter',
+          title: '季度',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'department',
+          title: '部门',
+          wiidth: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'pname',
+          title: '项目名称',
+          wiidth: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'thisContent',
+          title: '周报内容',
+          width: 180,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'schedule',
+          title: '项目进度',
+          width: 180,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'time',
+          title: '提交日期',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          fixed: 'center',
+          title: '操作',
+          toolbar: '#vkreport_op',
+          width: 100
+        }]
+      ],
+      page: true,
+      limit: 5,
+      limits: [5, 10]
+    });
+  });
+</script>
+
+<script type="text/html" id="overcal_op">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">查看</a>
+</script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test_overcalc_table',
+      url: '/superadmin_query/overcalc_query',
+      toolbar: '#toolbarDemo'
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '加班数据统计表',
+      cols: [
+        [{
+          field: 'quarter',
+          title: '季度',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'department',
+          title: '部门',
+          wiidth: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'pname',
+          title: '项目名称',
+          wiidth: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'manager',
+          title: '负责人',
+          width: 180,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'prate',
+          title: '加班统计',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'time',
+          title: '创建时间',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          fixed: 'center',
+          title: '操作',
+          toolbar: '#overcal_op',
+          width: 100
+        }]
+      ],
+      page: true,
+      limit: 5,
+      limits: [5, 10]
+    });
+  });
+</script>
+
+<script type="text/html" id="pro_op">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">查看</a>
+</script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test_pro_table',
+      url: '/superadmin_query/pro_query',
+      toolbar: '#toolbarDemo'
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '项目评审数据统计表',
+      cols: [
+        [{
+          field: 'quarter',
+          title: '季度',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'department',
+          title: '部门',
+          wiidth: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'pname',
+          title: '项目名称',
+          wiidth: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'manager',
+          title: '负责人',
+          width: 180,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'result',
+          title: '评审结果',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'time',
+          title: '创建时间',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          fixed: 'center',
+          title: '操作',
+          toolbar: '#pro_op',
+          width: 100
+        }]
+      ],
+      page: true,
+      limit: 5,
+      limits: [5, 10]
+    });
+  });
+</script>
+
+<script type="text/html" id="emplo_op">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">查看</a>
+</script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test_emplo_table',
+      url: '/superadmin_query/emplo_query',
+      toolbar: '#toolbarDemo'
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '员工考核数据统计表',
+      cols: [
+        [{
+          field: 'quarter',
+          title: '季度',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'department',
+          title: '部门',
+          wiidth: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'name',
+          title: '姓名',
+          wiidth: 150,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'project_score',
+          title: '项目得分',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'other_score',
+          title: '其他得分',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'note',
+          title: '备注',
+          width: 150,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'time',
+          title: '创建时间',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          fixed: 'center',
+          title: '操作',
+          toolbar: '#emplo_op',
+          width: 100
+        }]
+      ],
+      page: true,
+      limit: 5,
+      limits: [5, 10]
+    });
+  });
+</script>
+
+<script type="text/html" id="depart_op">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">查看</a>
+</script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test_depart_table',
+      url: '/superadmin_query/depart_query',
+      toolbar: '#toolbarDemo'
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '部门考核数据统计表',
+      cols: [
+        [{
+          field: 'quarter',
+          title: '季度',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'department',
+          title: '部门',
+          wiidth: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'manager',
+          title: '负责人',
+          width: 180,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'score',
+          title: '考核得分',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'note',
+          title: '备注',
+          width: 180,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'time',
+          title: '提交时间',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          fixed: 'center',
+          title: '操作',
+          toolbar: '#depart_op',
+          width: 100
+        }]
+      ],
+      page: true,
+      limit: 5,
+      limits: [5, 10]
+    });
+  });
+</script>
+
+<script type="text/html" id="team_op">
+  <a class="layui-btn layui-btn-xs" lay-event="edit">查看</a>
+</script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test_team_table',
+      url: '/superadmin_query/team_query',
+      toolbar: '#toolbarDemo'
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '团队考核数据统计表',
+      cols: [
+        [{
+          field: 'quarter',
+          title: '季度',
+          width: 180,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'department',
+          title: '部门',
+          wiidth: 180,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'manager',
+          title: '负责人',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'score',
+          title: '考核得分',
+          width: 180,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'note',
+          title: '备注',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'time',
+          title: '提交时间',
+          width: 180,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          fixed: 'center',
+          title: '操作',
+          toolbar: '#team_op',
+          width: 100
+        }]
+      ],
+      page: true,
+      limit: 5,
+      limits: [5, 10]
+    });
+  });
+</script>
+<style>
+  #p1,
+  #p2,
+  #p3,
+  #p4,
+  #p5,
+  #p6,
+  #p7 {
+    display: none;
+  }
+</style>
+<script>
+  flag = "p0";
+  function con(i) {
+    document.getElementById(flag).style.display = "none";
+    document.getElementById("p" + i).style.display = "inline-block";
+    flag = "p" + i;
+  }
+</script>
+
+<script>
+  layui.use('laydate', function () {
+    var laydate = layui.laydate;
+
+    laydate.render({
+      elem: '#test17',
+      calendar: true,
+      // ,theme: 'grid'     
+      done: function (value, date, endDate) {
+        var time_start = document.getElementById('test17').value
+        var time_end = document.getElementById('test18').value
+        $.post("/superadmin_query/qplan_time_value", {
+          'start': time_start, 'end': time_end
+        }, function (ret) {
+          if (ret.code == 0) {
+
+            layer.msg("季度计划时间设置成功", {
+              icon: 1,
+              time: 500
+            }, function () {
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("时间设置错误", {
+              icon: 2,
+              time: 500
+            });
+            $(".layui-laypage-btn").click();
+          }
+        });
+      }
+    });
+    laydate.render({
+      elem: '#test18',
+      calendar: true,
+      // ,theme: 'grid'
+      done: function (value, date, endDate) {
+        var time_start = document.getElementById('test17').value
+        var time_end = document.getElementById('test18').value
+        $.post("/superadmin_query/qplan_time_value", {
+          'start': time_start, 'end': time_end
+        }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("季度计划时间设置成功", {
+              icon: 1,
+              time: 500
+            }, function () {
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("时间设置错误", {
+              icon: 2,
+              time: 500
+            });
+            $(".layui-laypage-btn").click();
+          }
+        });
+      }
+    });
+
+    laydate.render({
+      elem: '#test_week',
+      calendar: true,
+      done: function (value, date, endDate) {
+        var time_start = document.getElementById('test_week').value
+        var time_end = document.getElementById('test_week_2').value
+        $.post("/superadmin_query/weekreport_query", {
+          'start': time_start, 'end': time_end
+        }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("时间设置成功", {
+              icon: 1,
+              time: 500
+            }, function () {
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("时间设置错误", {
+              icon: 2,
+              time: 500
+            });
+            $(".layui-laypage-btn").click();
+          }
+        });
+      }
+    });
+
+    laydate.render({
+      elem: '#test_week_2',
+      calendar: true,
+      done: function (value, date, endDate) {
+        var time_start = document.getElementById('test_week').value
+        var time_end = document.getElementById('test_week_2').value
+        $.post("/superadmin_query/weekreport_query", {
+          'start': time_start, 'end': time_end
+        }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("时间设置成功", {
+              icon: 1,
+              time: 500
+            }, function () {
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("时间设置错误", {
+              icon: 2,
+              time: 500
+            });
+            $(".layui-laypage-btn").click();
+          }
+        });
+      }
+    });
+
+    laydate.render({
+      elem: '#test_overcalc',
+      calendar: true
+      // ,theme: 'grid'
+      ,
+      done: function (value, date, endDate) {
+        $.post("/superadmin_query/Oday_time_value", {
+          'value': value
+        }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("时间设置成功", {
+              icon: 1,
+              time: 500
+            }, function () {
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("时间设置错误", {
+              icon: 2,
+              time: 500
+            });
+            $(".layui-laypage-btn").click();
+          }
+        });
+      }
+    });
+
+    laydate.render({
+      elem: '#test_pro',
+      calendar: true
+      // ,theme: 'grid'
+      ,
+      done: function (value, date, endDate) {
+        $.post("/superadmin_query/pro_time_value", {
+          'value': value
+        }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("时间设置成功", {
+              icon: 1,
+              time: 500
+            }, function () {
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("时间设置错误", {
+              icon: 2,
+              time: 500
+            });
+            $(".layui-laypage-btn").click();
+          }
+        });
+      }
+    });
+
+    laydate.render({
+      elem: '#test_emplo',
+      calendar: true
+      ,
+      done: function (value, date, endDate) {
+        $.post("/superadmin_query/emplo_time_value", {
+          'value': value
+        }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("时间设置成功", {
+              icon: 1,
+              time: 500
+            }, function () {
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("时间设置错误", {
+              icon: 2,
+              time: 500
+            });
+            $(".layui-laypage-btn").click();
+          }
+        });
+      }
+    });
+    laydate.render({
+      elem: '#test_depart',
+      calendar: true
+      // ,theme: 'grid'
+      ,
+      done: function (value, date, endDate) {
+        $.post("/superadmin_query/depart_time_value", {
+          'value': value
+        }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("时间设置成功", {
+              icon: 1,
+              time: 500
+            }, function () {
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("时间设置错误", {
+              icon: 2,
+              time: 500
+            });
+            $(".layui-laypage-btn").click();
+          }
+        });
+      }
+    });
+
+    laydate.render({
+      elem: '#test_team',
+      calendar: true
+      // ,theme: 'grid'
+      ,
+      done: function (value, date, endDate) {
+        $.post("/superadmin_query/team_time_value", {
+          'value': value
+        }, function (ret) {
+          if (ret.code == 0) {
+            layer.msg("时间设置成功", {
+              icon: 1,
+              time: 500
+            }, function () {
+              $(".layui-laypage-btn").click();
+            });
+          } else {
+            layer.msg("时间设置错误", {
+              icon: 2,
+              time: 500
+            });
+            $(".layui-laypage-btn").click();
+          }
+        });
+      }
+    });
+  });
+</script>
+
+<script>
+  $("#sendQuarter").click(function () {
+
+    var time_start = document.getElementById('test17').value
+    var time_end = document.getElementById('test18').value
+    $.ajax({
+      type: 'post',
+      url: 'quater_plan_time_post',
+      cache: false,
+      data: { 'start': time_start, 'end': time_end },
+      dataType: 'json',
+      success: function (data) {
+        // alert("发送成功")
+        layer.msg('发送成功', { icon: 1 })
+      },
+      error: function () {
+        layer.msg('发送失败，请稍后重试', { icon: 5 })
+      }
+    })
+
+  })
+</script>
+<script>
+  $("#sendWeek").click(function () {
+    var time_start = document.getElementById('test_week').value
+    var time_end = document.getElementById('test_week_2').value
+    $.ajax({
+      type: 'post',
+      url: 'week_plan_time_post',
+      cache: false,
+      data: { 'start': time_start, 'end': time_end },
+      dataType: 'json',
+      success: function (data) {
+        layer.msg('发送成功', { icon: 1 })
+      },
+      error: function () {
+        layer.msg('发送失败，请稍后重试', { icon: 5 })
+      }
+
+    })
+  })
+</script>
+{% endblock %}

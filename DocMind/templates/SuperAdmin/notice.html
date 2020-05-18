@@ -1,0 +1,167 @@
+{% extends 'general_layout/general_layout_admin.html' %}
+{% block content %}
+<div class="layui-container fly-marginTop fly-user-main">
+  <div class="fly-panel fly-panel-user temContent" pad20>
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>编写通知</legend>
+    </fieldset>
+    <form class="layui-form" action="superadmin_query/notice_insert">
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label">通知标题</label>
+          <div class="layui-input-inline">
+            <input type="text" name="title" lay-verify="required" autocomplete="off" class="layui-input"
+              placeholder="10个字符以内">
+          </div>
+        </div>
+        <div class="layui-inline">
+          <label class="layui-form-label">通知类型</label>
+          <div class="layui-input-inline">
+            <select name="rank">
+              {% for rank in ranks%}
+              <option value="{{rank}}">{{rank}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">消息内容</label>
+        <div class="layui-input-block">
+          <textarea placeholder="请输入通知消息的内容" class="layui-textarea" lay-verify="required" name="content"></textarea>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+          <!-- <button type="reset" class="layui-btn layui-btn-primary">取消</button> -->
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;">
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>历史消息</legend>
+    </fieldset>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+  </div>
+</div>
+<script type="text/html" id="barDemo">
+  <!-- <a class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon">&#xe705;修改</i></a> -->
+<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon">&#xe640;删除</i></a>
+</script>
+
+
+<script src="static/layui.js" charset="utf-8"></script>
+<script>
+  layui.use('element', function () {
+    var element = layui.element;
+    //监听导航点击
+    element.on('nav(demo)', function (elem) { });
+  });
+</script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="static/layui.js" charset="utf-8"></script>
+
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test',
+      url: '/superadmin_query/notice_query',
+      toolbar: '#toolbarDemo'
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '用户数据表',
+      cols: [
+        [{
+          field: 'title',
+          title: '标题',
+          width: 150,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'content',
+          title: '通知详情',
+          wiidth: 300,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'rank',
+          title: '类型',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'poster',
+          title: '发布人',
+          width: 150,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'time',
+          title: '发布时间',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          fixed: 'center',
+          title: '操作',
+          toolbar: '#barDemo',
+          width: 130
+        }]
+      ],
+      page: true,
+      limit: 5,
+      limits: [5, 10]
+    });
+  });
+</script>
+<script>
+  layui.use(['table', 'form', 'layer'], function () {
+    var table = layui.table;
+    //监听行工具事件
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+
+      table.on('tool(test)', function (obj) {
+        var data = obj.data;
+        console.log(obj)
+        if (obj.event === 'del') {
+
+          layer.confirm('  确认删除 ？', {
+            icon: 3,
+            title: '提示'
+          }, function (index) {
+
+            $.post("/superadmin_query/notice_del", {
+              'id': data.id
+            }, function (ret) {
+              if (ret.code == 0) {
+                layer.msg("正在删除", {
+                  icon: 1,
+                  time: 500
+                }, function () {
+                  obj.del();
+                  $(".layui-laypage-btn").click();
+                });
+              } else {
+                layer.msg("错误删除", {
+                  icon: 2,
+                  time: 500
+                });
+              }
+            });
+            layer.close(index);
+          });
+        }
+      });
+    });
+  });
+</script>
+
+{% endblock %}

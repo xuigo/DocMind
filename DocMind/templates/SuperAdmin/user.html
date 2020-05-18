@@ -1,0 +1,153 @@
+{% extends 'general_layout/general_layout_admin.html' %}
+{% block content %}
+<div class="layui-container fly-marginTop fly-user-main">
+  <div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;">
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>用户列表</legend>
+    </fieldset>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+  </div>
+</div>
+<script type="text/html" id="barDemo">
+<a class="layui-btn layui-btn-xs" lay-event="verify"><i class="layui-icon">&#xe640;审核</i></a>
+
+</script>
+<script src="static/layui.js" charset="utf-8"></script>
+<script>
+  layui.use('element', function () {
+    var element = layui.element;
+    element.on('nav(demo)', function (elem) { });
+  });
+</script>
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="static/layui.js" charset="utf-8"></script>
+
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test',
+      url: '/superadmin_query/user_query',
+      toolbar: '#toolbarDemo'
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '用户数据表',
+      cols: [
+        [{
+          field: 'username',
+          title: '姓名',
+          width: 150,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'department',
+          title: '部门',
+          wiidth: 300,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'role',
+          title: '角色',
+          wiidth: 300,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'email',
+          title: '邮箱',
+          wiidth: 300,
+          fixed: 'left',
+          unresize: true
+        }, {
+          field: 'project',
+          title: '项目',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'sign',
+          title: '签名',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'state',
+          title: '状态',
+          width: 150,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          fixed: 'center',
+          title: '操作',
+          toolbar: '#barDemo',
+          width: 130
+        }]
+      ],
+      page: true,
+      limit: 10,
+      limits: [10, 20, 30, 40],
+      done: function (res, curr, count) {
+        $.each(res.data, function (i, val) {
+          if (val.state == '已审核') {
+            $('tr[data-index="' + i + '"]').addClass('blackcolor');
+          } else {
+            $('tr[data-index="' + i + '"]').addClass('greencolor');
+          }
+        });
+      }
+    });
+  });
+</script>
+<style>
+  .blackcolor {
+    color: #2F4056;
+  }
+
+  .greencolor {
+    color: green;
+  }
+</style>
+<script>
+  layui.use(['table', 'form', 'layer'], function () {
+    var table = layui.table;
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+
+      console.log(obj)
+      if (obj.event === 'verify') {
+
+        layer.confirm('  确认审核 ？', {
+          icon: 3,
+          title: '提示'
+        }, function (index) {
+
+          $.post("/superadmin_query/user_verify", {
+            'id': data.id
+          }, function (ret) {
+            if (ret.code == 0) {
+              layer.msg("审核完成", {
+                icon: 1,
+                time: 500
+              }, function () {
+                obj.del();
+                $(".layui-laypage-btn").click();
+              });
+            } else {
+              layer.msg("操作错误", {
+                icon: 2,
+                time: 500
+              });
+            }
+          });
+          layer.close(index);
+        });
+      }
+    });
+    //   });
+
+  });
+</script>
+
+{% endblock %}

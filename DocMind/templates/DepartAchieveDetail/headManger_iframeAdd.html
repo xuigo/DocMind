@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="static/css/layui.css" media="all">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body style="padding-right:10%;">
+  <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+  </fieldset>
+  <form class="layui-form" action="performance/iframe">
+    <div class="layui-form-item">
+      <label class="layui-form-label">季度名称</label>
+      <div class="layui-input-inline">
+        <select name="quiz1" lay-search="" id="quarter" lay-verify="required">
+          <option value="">请输入季度</option>
+          {% for quarter in templates['quarters'] %}
+          <option value="{{quarter}}">{{quarter}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">部门名称</label>
+      <div class="layui-input-inline">
+        <select name="quiz2" lay-search="" id="department" lay-verify="required">
+          <option value="">请选择部门</option>
+          {% for department in templates['departments'] %}
+          <option value="{{department}}">{{department}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">部门总监</label>
+
+      <div class="layui-input-inline">
+        <select name="quiz3" lay-search="" id="manager" lay-verify="required">
+          <option value="">请输入姓名</option>
+          {% for manager in templates['managers'] %}
+          <option value="{{manager}}">{{manager}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">部门得分</label>
+      <div class="layui-input-inline">
+        <input type="text" name="flag" autocomplete="off" style="display:none;" id="flag">
+
+        <input type="text" name="department_score" id="department_score" lay-verify="required" placeholder="请输入部门得分"
+          autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label class="layui-form-label">备注</label>
+      <div class="layui-input-inline">
+        <input type="text" name="note" id="note" placeholder="请输入备注" autocomplete="off" class="layui-input">
+      </div>
+    </div>
+    </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block">
+        <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">提交</button>
+        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+      </div>
+    </div>
+  </form>
+  <script src="static/layui.js" charset="utf-8"></script>
+  <script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+      var form = layui.form
+        , layer = layui.layer
+        , layedit = layui.layedit
+        , laydate = layui.laydate;
+      form.on('submit(demo1)', function (data) {
+        var index = parent.layer.getFrameIndex(window.name);
+        window.parent.location.reload();
+      });
+    });
+  </script>
+</body>
+</html>

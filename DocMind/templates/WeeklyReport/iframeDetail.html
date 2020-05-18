@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" href="static/css/layui.css" media="all">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+<body>
+
+  <div class="fly-panel fly-panel-user temContent" pad20>
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <!-- <legend>周报修改</legend> -->
+    </fieldset>
+    <form class="layui-form" action="v_iframe_msg">
+      <div class="layui-form-item">
+        <label class="layui-form-label">项目名称</label>
+        <div class="layui-input-inline">
+          <input type="text" name="pname" id="pname" lay-verify="required" disabled readonly placeholder="请输入项目名称"
+            autocomplete="off" class="layui-input">
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <label class="layui-form-label">项目进度</label>
+        <div class="layui-input-inline">
+          <select name="schedule" id="schedule">
+            <option value="">项目进度</option>
+            {% for schedule in templates['schedules'] %}
+            <option value="{{schedule}}">{{schedule}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">上周计划</label>
+        <div class="layui-input-block">
+
+          <textarea placeholder="请输入内容" class="layui-textarea" name="lastPlan" id="lastPlan"></textarea>
+
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">本周工作</label>
+        <div class="layui-input-block">
+          <textarea placeholder="请输入内容" class="layui-textarea" name="thisWeek" id="thisWeek"></textarea>
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">下周安排</label>
+        <div class="layui-input-block">
+          <input type="text" name="flag" autocomplete="off" style="display:none;" id="flag">
+          <textarea placeholder="请输入内容" class="layui-textarea" name="nextPlan" id="nextPlan"></textarea>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="static/layui.js" charset="utf-8"></script>
+  <script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+      var form = layui.form
+        , layer = layui.layer
+        , layedit = layui.layedit
+        , laydate = layui.laydate;
+
+      //监听提交
+      form.on('submit(demo1)', function (data) {
+        var index = parent.layer.getFrameIndex(window.name);
+        parent.layer.close(index);
+        window.parent.location.reload();
+
+      });
+
+    });
+  </script>
+
+</body>
+
+</html>

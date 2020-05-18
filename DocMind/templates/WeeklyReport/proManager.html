@@ -1,0 +1,148 @@
+{% extends 'general_layout/general_layout_table.html' %}
+{% block content %}
+<div class="layui-container fly-marginTop fly-user-main">
+  <div class="fly-panel fly-panel-user temContent" pad20>
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>{{msg['quarter']}}/{{msg['pname']}}/周报填写</legend>
+    </fieldset>
+    <form class="layui-form" action="weeklyreport/submit">
+      <div class="layui-form-item">
+        <label class="layui-form-label">项目进度</label>
+        <div class="layui-input-inline">
+          <select name="quiz4">
+            <option value="">项目进度</option>
+            {% for schedule in templates['schedules'] %}
+            <option value="{{schedule}}">{{schedule}}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">上周计划</label>
+        <div class="layui-input-block">
+          <textarea placeholder="请输入内容" class="layui-textarea" name="lastPlan"></textarea>
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">本周工作</label>
+        <div class="layui-input-block">
+          <textarea placeholder="请输入内容" class="layui-textarea" name="thisWeek"></textarea>
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label">下周安排</label>
+        <div class="layui-input-block">
+          <textarea placeholder="请输入内容" class="layui-textarea" name="nextPlan"></textarea>
+        </div>
+      </div>
+      <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button type="submit" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="fly-panel fly-panel-user temContent" pad20 style="min-height:200px;">
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>提交记录</legend>
+    </fieldset>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+  </div>
+</div>
+
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon">&#xe705;修改</i></a>
+  <!-- <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a> -->
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del"><i class="layui-icon">&#xe640;删除</i></a>
+</script>
+
+
+<script src="static/layui.js" charset="utf-8"></script>
+<script>
+  layui.use('element', function () {
+    var element = layui.element; 	  
+    //监听导航点击
+    element.on('nav(demo)', function (elem) {
+      //console.log(elem)
+      //layer.msg(elem.text());
+    });
+  });
+</script>
+
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="static/layui.js" charset="utf-8"></script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test'
+      , url: '/weeklyreport/query'
+      , toolbar: '#toolbarDemo' 
+      , defaultToolbar: ['exports', 'print']
+      , title: '用户数据表'
+      , cols: [[
+        { field: 'quarter', title: '季度名称', width: 150, fixed: 'left', unresize: true }
+        , { field: 'department', title: '部门名称', wiidth: 150, fixed: 'left', unresize: true, sort: true }
+        , { field: 'pname', title: '项目名称', width: 150, fixed: 'left', unresize: true, sort: true }
+        // ,{field:'manager', title:'负责人', width:165, fixed: 'left', unresize: true}
+        , { field: 'thisContent', title: '周报内容', width: 150, fixed: 'left', unresize: true }
+        , { field: 'schedule', title: '项目进度', width: 150, fixed: 'left', unresize: true }
+        , { field: 'time', title: '提交时间', width: 150, fixed: 'left', unresize: true, sort: true }
+        , { fixed: 'center', title: '操作', toolbar: '#barDemo', width: 170 }
+      ]]
+      , page: true
+      , limit: 5
+      , limits: [5, 10]
+    });
+  });
+</script>
+
+<script>
+  layui.use(['table', 'form', 'layer'], function () {
+    var table = layui.table;
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+      //console.log(obj)
+      table.on('tool(test)', function (obj) {
+        var data = obj.data;
+        //console.log(obj)
+        if (obj.event === 'detail') {
+          layer.open({
+            type: 2,
+            title: "周报信息修改",
+            content: "vkreport_iframe",
+            area: ['60%', '80%'],
+            success: function (layero, index) {
+              var body = layer.getChildFrame('body', index);
+              var iframeWin = window[layero.find('iframe')[0]['name']]; 
+              console.log(body.html()) //得到iframe页的body内容
+              body.find('#flag').val(data.id)
+              body.find('#pname').val(data.pname)
+              body.find('#schedule').val(data.schedule)
+              body.find('#lastPlan').val(data.lastContent)
+              body.find('#thisWeek').val(data.thisContent)
+              body.find('#nextPlan').val(data.nextContent)
+
+            }
+
+          });
+        }
+        else if (obj.event === 'del') {
+          $.post("weeklyreportdelete", { 'id': data.id }, function (ret) {
+            //layer.msg('项目：' + data.id + ' 的删除操作');
+            if (ret.code == 0) {
+              layer.msg("正在删除", { icon: 1, time: 1500 }, function () {
+                obj.del();
+                $(".layui-laypage-btn").click();
+              });
+            } else {
+              layer.msg("错误删除", { icon: 2, time: 1500 });
+            }
+          });
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

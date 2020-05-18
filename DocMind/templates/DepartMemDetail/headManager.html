@@ -1,0 +1,113 @@
+{% extends 'general_layout/general_layout_table.html' %}
+{% block content %}
+<div class="layui-container fly-marginTop fly-user-main">
+  <div class="fly-panel fly-panel-user temContent" pad20 style="min-height:250px">
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>员工考核情况填写</legend>
+    </fieldset>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+  </div>
+</div>
+
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="static/layui.js" charset="utf-8"></script>
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>
+</script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test',
+      url: '/staff_manager',
+      toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+      ,
+      defaultToolbar: ['exports', 'print'],
+      title: '用户数据表',
+      cols: [
+        [{
+          field: 'quarter',
+          title: '季度名称',
+          width: 130,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'department',
+          title: '部门名称',
+          width: 130,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'name',
+          title: '姓名',
+          width: 130,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'project_score',
+          title: '项目得分',
+          width: 130,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'other_score',
+          title: '部门得分',
+          width: 130,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          field: 'note',
+          title: '备注',
+          width: 310,
+          fixed: 'left',
+          unresize: true,
+          sort: true
+        }, {
+          fixed: 'center',
+          title: '操作',
+          toolbar: '#barDemo',
+          width: 130
+        }]
+      ],
+      page: true,
+      limit: 5,
+      limits: [5, 10, 15]
+    });
+
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+      //console.log(obj)
+      if (obj.event === 'detail') {
+
+        layer.open({
+          type: 2,
+          title: "人员【" + data.name + "】考核详细",
+          content: "{{url_for('DepartMemDetail.employee_iframe_header')}}",
+          area: ['20%', '55%'],
+          success: function (layero, index) {
+            var body = layer.getChildFrame('body', index);
+            var iframeWin = window[layero.find('iframe')[0][
+              'name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            console.log(body.html()) //得到iframe页的body内容
+            body.find('#quarter').val(data.quarter)
+            body.find('#department').val(data.department)
+            body.find('#manager').val(data.name)
+            body.find('#project_score').val(data.project_score)
+            body.find('#department_score').val(data.other_score)
+            body.find('#note').val(data.note)
+          }
+        });
+      }
+    });
+  });
+</script>
+
+
+
+
+{% endblock %}

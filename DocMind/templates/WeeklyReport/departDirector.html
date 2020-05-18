@@ -1,0 +1,89 @@
+{% extends 'general_layout/general_layout_table.html' %}
+{% block content %}
+<div class="layui-container fly-marginTop fly-user-main">
+
+  <div class="fly-panel fly-panel-user temContent" pad20>
+    <!-- 显示已提交数据 -->
+    <fieldset class="layui-elem-field layui-field-title site-demo-button" style="margin-top: 10px;">
+      <legend>周报提交详情</legend>
+    </fieldset>
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+  </div>
+</div>
+
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" lay-event="detail"><i class="layui-icon">&#xe705;查看</i></a>
+  <!-- <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a> -->
+</script>
+
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="static/layui.js" charset="utf-8"></script>
+<script>
+  layui.use('table', function () {
+    var table = layui.table;
+    table.render({
+      elem: '#test'
+      , url: '/vkreport_query/director'
+      , toolbar: '#toolbarDemo' 
+      , defaultToolbar: ['exports', 'print']
+      , title: '用户数据表'
+      , cols: [[
+        { field: 'quarter', title: '季度名称', wiidth: 180, fixed: 'left', unresize: true, sort: true }
+        // ,{field:'department', title:'部门名称', width:150, fixed: 'left', unresize: true, sort: true}
+        , { field: 'pname', title: '项目名称', width: 180, fixed: 'left', unresize: true, sort: true }
+        //,{field:'member', title:'未命名', width:250, fixed: 'left', unresize: true, sort: true}
+        , { field: 'manager', title: '项目经理', width: 150, fixed: 'left', unresize: true, sort: true }
+        , { field: 'schedule', title: '项目进度', width: 150, fixed: 'left', unresize: true, sort: true }
+        , { field: 'time', title: '提交时间', width: 200, fixed: 'left', unresize: true, sort: true }
+        , { fixed: 'center', title: '操作', toolbar: '#barDemo', width: 120 }
+      ]]
+      , page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+        layout: ['limit', 'count', 'prev', 'page', 'next', 'skip'] //自定义分页布局
+        //,curr: 5 //设定初始在第 5 页
+        , groups: 1 //只显示 1 个连续页码
+        , first: false //不显示首页
+        , last: false //不显示尾页  
+      }
+    });
+  });
+</script>
+
+<script>
+  layui.use('element', function () {
+    var element = layui.element; 
+    element.on('nav(demo)', function (elem) {
+    });
+  });
+</script>
+<script>
+  layui.use(['table', 'form', 'layer'], function () {
+    var table = layui.table;
+
+    //监听行工具事件
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+      //console.log(obj)
+      if (obj.event === 'detail') {
+        layer.open({
+          type: 2,
+          title: "周报信息修改",
+          content: "{{url_for('WeeklyReport.vkreport_iframe')}}",
+          area: ['60%', '80%'],
+          success: function (layero, index) {
+            var body = layer.getChildFrame('body', index);
+            var iframeWin = window[layero.find('iframe')[0]['name']]; //得到iframe页的窗口对象，执行iframe页的方法：iframeWin.method();
+            console.log(body.html()) //得到iframe页的body内容
+            body.find('#flag').val(data.id)
+            body.find('#pname').val(data.pname)
+            body.find('#schedule').val(data.schedule)
+            body.find('#lastPlan').val(data.lastContent)
+            body.find('#thisWeek').val(data.thisContent)
+            body.find('#nextPlan').val(data.nextContent)
+          },
+        });
+      }
+
+    });
+  });
+</script>
+{% endblock %}

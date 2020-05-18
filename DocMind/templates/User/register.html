@@ -1,0 +1,123 @@
+{% extends 'general_layout/general_layout.html' %}
+{% block content %}
+
+
+<div class="layui-container fly-marginTop">
+  <div class="fly-panel fly-panel-user" pad20>
+    <div class="layui-tab layui-tab-brief" lay-filter="user">
+      <ul class="layui-tab-title">
+        <li><a href="{{url_for('User.login')}}">登入</a></li>
+        <li class="layui-this">注册</li>
+      </ul>
+      <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-form layui-form-pane">
+            <form method="post" action="register" novalidate>
+              {{ form.csrf_token }}
+              <div class="layui-form-item">
+                {{form.username.label (class="layui-form-label") }}
+                {{form.username(class="layui-input-inline layui-input")}}
+
+                {% if form.username.errors %}
+                {% for msg in form.username.errors %}
+                <!-- 校验失败会将错误提示信息保存到errors中 -->
+                <div class="layui-form-mid layui-word-aux"><span style="color:#FF5722;">{{ msg }}</span></div>
+                {% endfor %}
+                {% else %}
+                <div class="layui-form-mid layui-word-aux">3到20个字符</div>
+                {% endif %}
+              </div>
+
+              <div class="layui-form-item">
+
+                {{form.email.label (class="layui-form-label") }}
+                {{form.email(class="layui-input-inline layui-input")}}
+
+                {% if form.email.errors %}
+                {% for msg in form.email.errors %}
+                <!-- 校验失败会将错误提示信息保存到errors中 -->
+                <div class="layui-form-mid layui-word-aux"><span style="color:#FF5722;">{{ msg }}</span></div>
+                {% endfor %}
+                {% else %}
+                <div class="layui-form-mid layui-word-aux">将会成为您唯一的登入名</div>
+                {% endif %}
+              </div>
+              <div class="layui-form-item">
+
+                {{form.role.label(class="layui-form-label")}}
+                <div class="layui-input-inline">
+                  {{form.role(class="layui-input-inline layui-input", id="pid")}}
+                </div>
+
+              </div>
+
+              <div class="layui-form-item">
+
+                {{form.password.label (class="layui-form-label") }}
+
+                {{form.password(class="layui-input-inline layui-input")}}
+                {% if form.password.errors %}
+                {% for msg in form.password.errors %}
+                <!-- 校验失败会将错误提示信息保存到errors中 -->
+                <div class="layui-form-mid layui-word-aux"><span style="color:#FF5722;">{{ msg }}</span></div>
+                {% endfor %}
+                {% else %}
+
+                <div class="layui-form-mid layui-word-aux">6到16个字符</div>
+                {% endif %}
+              </div>
+              <div class="layui-form-item">
+
+                {{form.re_password.label (class="layui-form-label") }}
+                {{form.re_password(class="layui-input-inline layui-input")}}
+
+                {% for msg in form.re_password.errors %}
+                <!-- 校验失败会将错误提示信息保存到errors中 -->
+                <div class="layui-form-mid layui-word-aux"><span style="color:#FF5722;">{{ msg }}</span></div>
+                {% endfor %}
+              </div>
+
+              <div class="layui-form-item">
+                <label for="L_vercode" class="layui-form-label">人机验证</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="L_vercode" name="vercode" required lay-verify="required" placeholder="请回答后面的问题"
+                    autocomplete="off" class="layui-input">
+                </div>
+
+
+                <div class="layui-form-mid">
+
+                  <a href=''><span style="color: #c00;">{{ver_code}}</span></a>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                {{form.submit(class="layui-btn") }}
+                <!-- <button class="layui-btn" lay-filter="*" alert="true" lay-submit>立即注册</button> -->
+              </div>
+              <div class="layui-form-item fly-form-app">
+                <span>或者直接使用社交账号快捷注册</span>
+                <a href="" onclick="layer.msg('正在通过QQ登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-qq"
+                  title="QQ登入"></a>
+                <a href="" onclick="layer.msg('正在通过微博登入', {icon:16, shade: 0.1, time:0})" class="iconfont icon-weibo"
+                  title="微博登入"></a>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="fly-footer">
+  <p><a href="#" target="_blank">DocMind社区</a> 2020 &copy; <a href="#" target="_blank">DocMind.cn 出品</a></p>
+  <p>
+    <a href="#" target="_blank">推广计划</a>
+    <a href="#" target="_blank">社区运营</a>
+    <a href="#" target="_blank">微信公众号</a>
+  </p>
+</div>
+
+{% endblock %}

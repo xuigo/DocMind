@@ -1,0 +1,167 @@
+{% extends 'general_layout/general_layout.html' %}
+{% block content %}
+<div class="fly-panel fly-column">
+  <div class="layui-container">
+    <ul class="layui-clear">
+      <li class="layui-hide-xs layui-this"><a href="/">首页</a></li>
+      <li><a href="#">提问</a></li>
+      <li><a href="#">分享<span class="layui-badge-dot"></span></a></li>
+      <li><a href="#">讨论</a></li>
+      <li><a href="#">建议</a></li>
+      <li><a href="#">公告</a></li>
+      <li><a href="#">动态</a></li>
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><span class="fly-mid"></span></li>
+      <!-- 用户登入后显示 -->
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="#">我发表的贴</a></li>
+      <li class="layui-hide-xs layui-hide-sm layui-show-md-inline-block"><a href="#">我收藏的贴</a></li>
+    </ul>
+    <div class="fly-column-right layui-hide-xs">
+      <span class="fly-search"><i class="layui-icon"></i></span>
+      <a href="#" class="layui-btn">发表新帖</a>
+    </div>
+    <div class="layui-hide-sm layui-show-xs-block" style="margin-top: -10px; padding-bottom: 10px; text-align: center;">
+      <a href="#" class="layui-btn">发表新帖</a>
+    </div>
+  </div>
+</div>
+<div class="layui-container">
+  <div class="layui-row layui-col-space15">
+    <div class="layui-col-md8">
+      <div class="fly-panel">
+        <div class="fly-panel-title fly-filter">
+          <a>置顶</a>
+        </div>
+        <ul class="fly-list">
+          <li>
+            <a href="{{url_for('User.home')}}" class="fly-avatar">
+              <img src="static/images/docmind.jpg" alt="avater">
+            </a>
+            <h2>
+              <a class="layui-badge">动态</a>
+              <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+            </h2>
+            <div class="fly-list-info">
+              <a href="{{url_for('User.home')}}" link>
+                <cite>管理员</cite>
+                <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
+                <i class="layui-badge fly-badge-vip">VIP3</i>
+              </a>
+              <span>刚刚</span>
+              <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>
+              <span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>
+              <span class="fly-list-nums">
+                <i class="iconfont icon-pinglun1" title="回答"></i> 66
+              </span>
+            </div>
+            <div class="fly-list-badge">
+            </div>
+          </li>
+          <li>
+            <a href="{{url_for('User.home')}}" class="fly-avatar">
+              <img src="static/images/docmind.jpg" alt="贤心">
+            </a>
+            <h2>
+              <a class="layui-badge">公告</a>
+              <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+            </h2>
+            <div class="fly-list-info">
+              <a href="{{url_for('User.home')}}" link>
+                <cite>管理员</cite>
+              </a>
+              <span>2017-11-30</span>
+              <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>
+              <!--<span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>-->
+              <span class="fly-list-nums">
+                <i class="iconfont icon-pinglun1" title="回答"></i> 66
+              </span>
+            </div>
+            <div class="fly-list-badge">
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="fly-panel" style="margin-bottom: 0;">
+        <div class="fly-panel-title fly-filter">
+          <a href="" class="layui-this">综合</a>
+          <span class="fly-mid"></span>
+          <a href="">未结</a>
+          <span class="fly-mid"></span>
+          <a href="">已结</a>
+          <span class="fly-mid"></span>
+          <a href="">精华</a>
+          <span class="fly-filter-right layui-hide-xs">
+            <a href="" class="layui-this">按最新</a>
+            <span class="fly-mid"></span>
+            <a href="">按热议</a>
+          </span>
+        </div>
+        <ul class="fly-list">
+          <li>
+            <a href="user/home.html" class="fly-avatar">
+              <img src="static/images/docmind.jpg" alt="贤心">
+            </a>
+            <h2>
+              <a class="layui-badge">分享</a>
+              <a href="jie/detail.html">基于 layui 的极简社区页面模版</a>
+            </h2>
+            <div class="fly-list-info">
+              <a href="{{url_for('User.home')}}" link>
+                <cite>管理员</cite>
+              </a>
+              <span>刚刚</span>
+              <span class="fly-list-kiss layui-hide-xs" title="悬赏飞吻"><i class="iconfont icon-kiss"></i> 60</span>
+              <!--<span class="layui-badge fly-badge-accept layui-hide-xs">已结</span>-->
+              <span class="fly-list-nums">
+                <i class="iconfont icon-pinglun1" title="回答"></i> 66
+              </span>
+            </div>
+            <div class="fly-list-badge">
+              <!--<span class="layui-badge layui-bg-red">精帖</span>-->
+            </div>
+          </li>
+        </ul>
+        <div style="text-align: center">
+          <div class="laypage-main">
+            <a href="#" class="laypage-next">加载更多</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="layui-col-md4">
+      <div class="fly-panel">
+        <h3 class="fly-panel-title">温馨通道</h3>
+        <ul class="fly-panel-main fly-list-static">
+          <li>
+            <a href="http://fly.layui.com/jie/4281/" target="_blank">layui 的 GitHub 及 Gitee (码云) 仓库，向作者致敬</a>
+          </li>
+          <li>
+            <a href="http://fly.layui.com/jie/5366/" target="_blank">
+              layui 常见问题的处理和实用干货集锦
+            </a>
+          </li>
+        </ul>
+      </div>
+      <dl class="fly-panel fly-list-one">
+        <dt class="fly-panel-title">本周热议</dt>
+        <dd>
+          <a href="#">基于 layui 的极简社区页面模版</a>
+          <span><i class="iconfont icon-pinglun1"></i> 16</span>
+        </dd>
+        <dd>
+          <a href="#">基于 layui 的极简社区页面模版</a>
+          <span><i class="iconfont icon-pinglun1"></i> 16</span>
+        </dd>
+      </dl>
+    </div>
+  </div>
+</div>
+<div class="fly-footer">
+  <p><a href="http://www.docmind.cn/" target="_blank">DocMind社区</a> 2020 &copy; <a href="http://www.docmind.cn/"
+      target="_blank">DocMind.cn 出品</a></p>
+  <p>
+    <a href="#" target="_blank">推广计划</a>
+    <a href="#" target="_blank">社区运营</a>
+    <a href="#" target="_blank">微信公众号</a>
+  </p>
+</div>
+{% endblock %}

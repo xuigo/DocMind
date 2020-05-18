@@ -1,0 +1,44 @@
+{% extends 'general_layout/general_layout.html' %}
+{% block content %}
+<style>
+    .header {
+        border-bottom: 1px solid #404553;
+        border-right: 1px solid #404553;
+    }
+
+    .notice {
+        width: 600px;
+        margin: 30px auto;
+        padding: 30px 15px;
+        border-top: 5px solid #009688;
+        line-height: 30px;
+        text-align: center;
+        font-size: 16px;
+        font-weight: 300;
+        background-color: #f2f2f2;
+    }
+
+    .notice-text {
+        font-size: 50px;
+    }
+</style>
+
+<div class="fly-none" style="min-height: 0; padding: 0;">
+    <i class="iconfont icon-tishilian"></i>
+</div>
+<div class="notice">
+    <span>非常抱歉，当前服务器内部出现故障，请您稍后重试</span><br><br>
+    <span class="notice-text">500</span>
+</div>
+<div class="fly-footer">
+    <p><a href="http://www.docmind.cn/" target="_blank">DocMind社区</a> 2020 &copy; <a href="http://www.docmind.cn/"
+            target="_blank">DocMind.cn 出品</a></p>
+    <p>
+        <a href="#" target="_blank">推广计划</a>
+        <a href="#" target="_blank">社区运营</a>
+        <a href="#" target="_blank">微信公众号</a>
+    </p>
+</div>
+
+
+{% endblock %}
