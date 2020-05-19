@@ -1,2 +1,2 @@
-*.py linguist-language=Flask
-*.html linguist-language=Flask
+*.py linguist-language=Python
+*.html linguist-language=Python
