@@ -1,5 +1,4 @@
-*.yml linguist-language=Java 
-*.html linguist-language=Java 
-*.js linguist-language=Java 
-*.xml linguist-language=Java
-*.css linguist-language=Java 
+*.html linguist-language=HTML 
+*.js linguist-language=JavaScript 
+*.css linguist-language=CSS
+*.py linguist-language=Python
