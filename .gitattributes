@@ -1,2 +1,2 @@
-*.py linguist-language=[Python HTML JavaScript]
-*.html linguist-language=[Python HTML JavaScript]
+*.py linguist-language=Python
+*.html linguist-language=Python
